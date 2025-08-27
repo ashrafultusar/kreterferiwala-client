@@ -1,6 +1,6 @@
 "use client";
+
 import LoadingPage from "@/app/loading";
-import useCategories from "@/hooks/useCategories";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -13,12 +13,12 @@ interface Product {
   regularPrice: number;
   discountPrice: number;
   images: string[];
-  category: string;
-  createdAt?: string; // added for showing date
+  category: string | string[];
+  createdAt?: string;
 }
 
 const AllCategoriesProducts = () => {
-  const { categories } = useCategories();
+  const [categories, setCategories] = useState<string[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -34,9 +34,23 @@ const AllCategoriesProducts = () => {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_BACKEND_API}/products`
         );
-        const data = await response.json();
+        const data: Product[] = await response.json();
         setProducts(data);
         setFilteredProducts(data);
+
+        // Build unique category list from all products
+        const uniqueCategories = Array.from(
+          new Set(
+            data.flatMap((p) =>
+              Array.isArray(p.category) ? p.category : [p.category]
+            )
+          )
+        );
+        setCategories(uniqueCategories);
+
+        if (uniqueCategories.length > 0) {
+          setActiveCategory(uniqueCategories[0]);
+        }
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -49,21 +63,18 @@ const AllCategoriesProducts = () => {
   // Category filter
   useEffect(() => {
     if (activeCategory) {
-      const filtered = products.filter(
-        (product) => product.category === activeCategory
-      );
+      const filtered = products.filter((product) => {
+        if (Array.isArray(product.category)) {
+          return product.category.includes(activeCategory);
+        } else {
+          return product.category === activeCategory;
+        }
+      });
       setFilteredProducts(filtered);
     } else {
       setFilteredProducts(products);
     }
   }, [activeCategory, products]);
-
-  // Set default category
-  useEffect(() => {
-    if (categories.length > 0) {
-      setActiveCategory(categories[0].name);
-    }
-  }, [categories]);
 
   // Delete Product
   const handleDelete = async () => {
@@ -135,8 +146,8 @@ const AllCategoriesProducts = () => {
           className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-teal-400 focus:outline-none w-full md:w-1/3 bg-white text-gray-700"
         >
           {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
+            <option key={category} value={category}>
+              {category}
             </option>
           ))}
         </select>
@@ -145,7 +156,9 @@ const AllCategoriesProducts = () => {
       {/* Products List */}
       <div className="space-y-4">
         {filteredProducts.length === 0 ? (
-          <div className="text-center text-gray-500 mt-6">No products found</div>
+          <div className="text-center text-gray-500 mt-6">
+            No products found
+          </div>
         ) : (
           filteredProducts.map((product) => (
             <div
@@ -154,7 +167,6 @@ const AllCategoriesProducts = () => {
             >
               {/* Left: Image + Info */}
               <div className="flex items-center gap-4">
-                {/* Product Image */}
                 <div className="relative w-20 h-20 shrink-0">
                   <Image
                     src={product.images[0]}
@@ -164,7 +176,6 @@ const AllCategoriesProducts = () => {
                   />
                 </div>
 
-                {/* Product Info */}
                 <div className="flex flex-col">
                   <h3 className="text-lg font-semibold text-gray-800">
                     {product.name}
@@ -176,7 +187,9 @@ const AllCategoriesProducts = () => {
                       : product.regularPrice}
                   </p>
                   <span className="text-gray-500 text-sm">
-                    {product.category}
+                    {Array.isArray(product.category)
+                      ? product.category.join(", ")
+                      : product.category}
                   </span>
                   {product.createdAt && (
                     <span className="text-gray-400 text-xs">

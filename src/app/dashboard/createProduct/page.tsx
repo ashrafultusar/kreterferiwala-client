@@ -4,36 +4,53 @@ import { useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { MdCloudUpload } from "react-icons/md";
-import useCategories from "@/hooks/useCategories";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";
+import useCategories from "@/hooks/useCategories";
 
 export default function ProductForm() {
-    const router = useRouter();
+  const router = useRouter();
   const { categories } = useCategories();
   const [isLoading, setIsLoading] = useState(false);
   const [product, setProduct] = useState({
     name: "",
-    category: "",
+    category: [] as string[], // selected categories
     description: "",
     regularPrice: "",
     discountPrice: "",
     images: [] as File[],
   });
 
+  // toggle category selection
+  const toggleCategory = (catName: string) => {
+    setProduct((prev) => {
+      if (prev.category.includes(catName)) {
+        // remove if already selected
+        return {
+          ...prev,
+          category: prev.category.filter((c) => c !== catName),
+        };
+      } else {
+        // add
+        return { ...prev, category: [...prev.category, catName] };
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (product.category.length === 0) {
+      return toast.error("Please select at least one category.");
+    }
+
     setIsLoading(true);
     const formData = new FormData();
     formData.append("name", product.name);
-    formData.append("category", product.category);
+    product.category.forEach((cat) => formData.append("category", cat));
     formData.append("description", product.description);
     formData.append("regularPrice", product.regularPrice);
     formData.append("discountPrice", product.discountPrice);
-
-    product.images.forEach((file) => {
-      formData.append("images", file);
-    });
+    product.images.forEach((file) => formData.append("images", file));
 
     try {
       const res = await fetch(
@@ -45,16 +62,16 @@ export default function ProductForm() {
       );
 
       if (res.ok) {
-        toast.success("Products add successfuly");
+        toast.success("Product added successfully");
         setProduct({
           name: "",
-          category: "",
+          category: [],
           description: "",
           regularPrice: "",
           discountPrice: "",
           images: [],
         });
-        router.push('/dashboard/orders')
+        router.push("/dashboard/orders");
       } else {
         const error = await res.json();
         toast.error("Error: " + error.message);
@@ -68,15 +85,12 @@ export default function ProductForm() {
   };
 
   return (
-    <div className=" ">
+    <div>
       <h2 className="text-2xl font-bold mb-6 text-start">Add New Product</h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col lg:flex-row gap-6 "
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-6">
         {/* LEFT SIDE – FORM INPUTS */}
-        <div className="flex-1  p-6 rounded-xl shadow space-y-4">
+        <div className="flex-1 p-6 rounded-xl shadow space-y-4">
           <input
             type="text"
             placeholder="Product Name"
@@ -86,21 +100,22 @@ export default function ProductForm() {
             required
           />
 
-          <select
-            className="w-full border p-2 rounded"
-            value={product.category}
-            onChange={(e) =>
-              setProduct({ ...product, category: e.target.value })
-            }
-            required
-          >
-            <option value="">Select Category</option>
+          {/* Category Cards */}
+          <div className="grid grid-cols-3 gap-2">
             {categories?.map((cat) => (
-              <option key={cat._id} value={cat.name}>
+              <div
+                key={cat._id}
+                onClick={() => toggleCategory(cat.name)}
+                className={`cursor-pointer border p-2 rounded text-center ${
+                  product.category.includes(cat.name)
+                    ? "bg-green-500 text-white border-green-500"
+                    : "bg-white text-black hover:bg-gray-100"
+                }`}
+              >
                 {cat.name}
-              </option>
+              </div>
             ))}
-          </select>
+          </div>
 
           <textarea
             placeholder="Product Description"
