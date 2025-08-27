@@ -201,7 +201,7 @@ const AllCategoriesProducts = () => {
 
               {/* Right: Edit + Delete */}
               <div className="flex gap-3 items-center">
-                <Link href={`/dashboard/editProduct/${product._id}`}>
+                <Link href={`/dashboard/allProducts/${product._id}`}>
                   <MdEdit className="text-xl text-gray-600 hover:text-teal-600 cursor-pointer" />
                 </Link>
                 <button

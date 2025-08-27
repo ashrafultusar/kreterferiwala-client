@@ -17,7 +17,7 @@ export default function EditProductForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [product, setProduct] = useState({
     name: "",
-    category: "",
+    category: [] as string[], // selected categories
     description: "",
     regularPrice: "",
     discountPrice: "",
@@ -35,7 +35,7 @@ export default function EditProductForm() {
         const data = await res.json();
         setProduct({
           name: data.name,
-          category: data.category,
+          category: Array.isArray(data.category) ? data.category : [data.category],
           description: data.description,
           regularPrice: data.regularPrice,
           discountPrice: data.discountPrice,
@@ -50,24 +50,35 @@ export default function EditProductForm() {
     fetchProduct();
   }, [id]);
 
+  // toggle category selection
+  const toggleCategory = (catName: string) => {
+    setProduct((prev) => {
+      if (prev.category.includes(catName)) {
+        return {
+          ...prev,
+          category: prev.category.filter((c) => c !== catName),
+        };
+      } else {
+        return { ...prev, category: [...prev.category, catName] };
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (product.category.length === 0) {
+      return toast.error("Please select at least one category.");
+    }
 
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("name", product.name);
-    formData.append("category", product.category);
+    product.category.forEach((cat) => formData.append("category", cat));
     formData.append("description", product.description);
     formData.append("regularPrice", product.regularPrice.toString());
     formData.append("discountPrice", product.discountPrice.toString());
-
-    // Append new images
     product.images.forEach((file) => formData.append("images", file));
-
-    // Append existing images URLs so they are not lost
-    product.existingImages.forEach((url) =>
-      formData.append("existingImages", url)
-    );
+    product.existingImages.forEach((url) => formData.append("existingImages", url));
 
     try {
       const res = await fetch(
@@ -80,7 +91,7 @@ export default function EditProductForm() {
 
       if (res.ok) {
         toast.success("Product updated successfully");
-        router.push("/dashboard/orders");
+        router.push("/dashboard/allProducts");
       } else {
         const error = await res.json();
         toast.error("Error: " + error.message);
@@ -112,27 +123,26 @@ export default function EditProductForm() {
             placeholder="Product Name"
             className="w-full border p-2 rounded"
             value={product.name}
-            onChange={(e) =>
-              setProduct({ ...product, name: e.target.value })
-            }
+            onChange={(e) => setProduct({ ...product, name: e.target.value })}
             required
           />
 
-          <select
-            className="w-full border p-2 rounded"
-            value={product.category}
-            onChange={(e) =>
-              setProduct({ ...product, category: e.target.value })
-            }
-            required
-          >
-            <option value="">Select Category</option>
+          {/* Category Cards */}
+          <div className="grid grid-cols-3 gap-2">
             {categories?.map((cat) => (
-              <option key={cat._id} value={cat.name}>
+              <div
+                key={cat._id}
+                onClick={() => toggleCategory(cat.name)}
+                className={`cursor-pointer border p-2 rounded text-center ${
+                  product.category.includes(cat.name)
+                    ? "bg-green-500 text-white border-green-500"
+                    : "bg-white text-black hover:bg-gray-100"
+                }`}
+              >
                 {cat.name}
-              </option>
+              </div>
             ))}
-          </select>
+          </div>
 
           <textarea
             placeholder="Product Description"
@@ -208,7 +218,12 @@ export default function EditProductForm() {
                   key={index}
                   className="w-full h-20 relative border rounded overflow-hidden"
                 >
-                  <Image src={url} alt={`Existing ${index + 1}`} fill className="object-cover" />
+                  <Image
+                    src={url}
+                    alt={`Existing ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
                   <button
                     type="button"
                     onClick={() => handleRemoveExistingImage(url)}
