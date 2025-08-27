@@ -10,12 +10,12 @@ import Image from "next/image";
 import Link from "next/link";
 import TitleWithLine from "@/Shared/TitleWithLine/TitleWithLine";
 
-
-// props টাইপ সঠিকভাবে define
+// Props type definition
 interface Category {
   _id: string;
   name: string;
-  image: string;
+  image?: string;
+  count?: number; // optional product count
 }
 
 interface AllCategoriesProps {
@@ -31,8 +31,6 @@ const AllCategories: React.FC<AllCategoriesProps> = ({ data }) => {
     setNavigationReady(true);
   }, []);
 
-  
-
   return (
     <div className="container mx-auto my-12 px-4">
       <TitleWithLine title="Shop By Categories" />
@@ -41,7 +39,6 @@ const AllCategories: React.FC<AllCategoriesProps> = ({ data }) => {
         <Swiper
           slidesPerView={8}
           spaceBetween={10}
-          centeredSlides={false}
           grabCursor={true}
           autoplay={{
             delay: 2500,
@@ -52,7 +49,6 @@ const AllCategories: React.FC<AllCategoriesProps> = ({ data }) => {
             nextEl: nextRef.current,
           }}
           modules={[Navigation, Autoplay]}
-          className="mySwiper"
           breakpoints={{
             0: { slidesPerView: 1 },
             320: { slidesPerView: 1 },
@@ -66,22 +62,36 @@ const AllCategories: React.FC<AllCategoriesProps> = ({ data }) => {
         >
           {data.map((category) => (
             <SwiperSlide key={category._id}>
-              <Link href={`/products-category/${encodeURIComponent(category.name)}`}>
-                <div className="flex flex-col border border-neutral-300 items-center justify-start bg-[#f7f9fc] rounded-xl p-6 shadow-sm hover:shadow-md transition-transform duration-300 hover:scale-105 w-full h-54">
-                  <div className="w-full h-full mb-4 relative">
-                    <Image
-                      src={category.image}
-                      alt={category.name}
-                      fill
-                      className="object-cover rounded-md"
-                    />
+              <Link
+                href={`/products-category/${encodeURIComponent(category.name)}`}
+              >
+                <div className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition duration-200 p-4 w-full flex items-center gap-4 cursor-pointer">
+                  {/* Image Section */}
+                  <div className="w-20 h-20 flex items-center justify-center bg-blue-50 rounded-lg overflow-hidden">
+                    {category.image ? (
+                      <Image
+                        src={category.image}
+                        alt={category.name}
+                        width={80}
+                        height={80}
+                        className="object-cover w-full h-full"
+                      />
+                    ) : (
+                      <span className="text-gray-400 text-xs">No Image</span>
+                    )}
                   </div>
-                  <h3
-                    className="font-semibold text-gray-800 truncate w-full max-w-full whitespace-nowrap overflow-hidden text-center"
-                    title={category.name}
-                  >
-                    {category.name}
-                  </h3>
+
+                  {/* Text Section */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-800">
+                      {category.name}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      {category.count && category.count > 0
+                        ? `${category.count} products`
+                        : "No products"}
+                    </p>
+                  </div>
                 </div>
               </Link>
             </SwiperSlide>
