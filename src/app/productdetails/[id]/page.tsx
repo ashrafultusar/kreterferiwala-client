@@ -167,6 +167,8 @@ const ProductDetails = () => {
                 "checkoutCart",
                 JSON.stringify(existingCart)
               );
+              // trigger cartUpdated
+              window.dispatchEvent(new Event("cartUpdated"));
               setIsOrdering(false);
             }}
             className="bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 md:py-3 px-6 rounded cursor-pointer text-center"
@@ -207,26 +209,26 @@ const ProductDetails = () => {
             Code : <span className="font-medium">{product.code || "N/A"}</span>
           </p>
           <p className="font-bold">
-  Category:{" "}
-  <span className="flex flex-wrap gap-2 mt-1">
-    {product?.category ? (
-      // If category is an array, map it, otherwise wrap single category in array
-      (Array.isArray(product?.category) ? product?.category : [product?.category]).map(
-        (cat, idx) => (
-          <span
-            key={idx}
-            className="bg-gray-300 text-black px-2 py-1 rounded-full text-sm"
-          >
-            {cat}
-          </span>
-        )
-      )
-    ) : (
-      <span className="font-medium">N/A</span>
-    )}
-  </span>
-</p>
-
+            Category:{" "}
+            <span className="flex flex-wrap gap-2 mt-1">
+              {product?.category ? (
+                // If category is an array, map it, otherwise wrap single category in array
+                (Array.isArray(product?.category)
+                  ? product?.category
+                  : [product?.category]
+                ).map((cat, idx) => (
+                  <span
+                    key={idx}
+                    className="bg-gray-300 text-black px-2 py-1 rounded-full text-sm"
+                  >
+                    {cat}
+                  </span>
+                ))
+              ) : (
+                <span className="font-medium">N/A</span>
+              )}
+            </span>
+          </p>
 
           <div className="text-sm">
             <div className="flex justify-between border-t pt-3">

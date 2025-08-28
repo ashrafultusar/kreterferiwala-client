@@ -86,6 +86,7 @@ const CheckoutPage = () => {
     );
     setProducts(updated);
     localStorage.setItem("checkoutCart", JSON.stringify(updated));
+    window.dispatchEvent(new Event("cartUpdated")); // ট্রিগার করলাম
   };
 
   const handleDecrease = (id: string) => {
@@ -94,12 +95,14 @@ const CheckoutPage = () => {
     );
     setProducts(updated);
     localStorage.setItem("checkoutCart", JSON.stringify(updated));
+    window.dispatchEvent(new Event("cartUpdated")); // এটাও দিলাম
   };
 
   const handleRemove = (id: string) => {
     const updated = products.filter((p) => p.id !== id);
     setProducts(updated);
     localStorage.setItem("checkoutCart", JSON.stringify(updated));
+    window.dispatchEvent(new Event("cartUpdated")); // এটাও দিলাম
   };
 
   const subTotal = products.reduce(

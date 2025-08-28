@@ -91,6 +91,8 @@ export default function ProductCard({
             }
 
             localStorage.setItem("checkoutCart", JSON.stringify(existingCart));
+            // trigger cartUpdated
+window.dispatchEvent(new Event("cartUpdated"));
           }}
           className="mt-auto bg-orange-400 hover:bg-orange-500 w-full text-white text-xs rounded-sm font-semibold py-2 px-5 transition text-center inline-block cursor-pointer"
         >
