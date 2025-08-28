@@ -20,7 +20,7 @@ interface SliderProps {
   data: ISliderImage[];
 }
 
-const Slider: React.FC<SliderProps> = ({ data }) => {
+const Slider: React.FC<SliderProps> = ({data}) => {
   const [showScrollButton, setShowScrollButton] = useState(true);
 
   useEffect(() => {

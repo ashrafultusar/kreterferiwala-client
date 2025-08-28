@@ -22,7 +22,7 @@ interface AllProductsProps {
 
 const PRODUCTS_PER_PAGE = 40;
 
-const AllProducts: React.FC<AllProductsProps> = ({ data }) => {
+const AllProducts: React.FC<AllProductsProps> = ({data}) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // ডেটা না থাকলে লোডিং দেখানো হবে

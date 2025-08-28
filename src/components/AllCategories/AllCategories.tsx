@@ -22,7 +22,7 @@ interface AllCategoriesProps {
   data: Category[];
 }
 
-const AllCategories: React.FC<AllCategoriesProps> = ({ data }) => {
+const AllCategories: React.FC<AllCategoriesProps> = ({data}) => {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [navigationReady, setNavigationReady] = useState(false);
