@@ -63,9 +63,35 @@ export default function ProductCard({
           </span>
         </div>
 
+        <button onClick={() => {
+            const newProduct: CartItem = {
+              id,
+              name,
+              regularPrice,
+              discountPrice,
+              image,
+              quantity: 1,
+            };
 
-        <button className="px-5 py-2 w-full text-xs bg-amber-400 rounded mb-2">
-          Add to cart
+            const existingCart: CartItem[] = JSON.parse(
+              localStorage.getItem("checkoutCart") || "[]"
+            );
+
+            const existingIndex = existingCart.findIndex(
+              (item: CartItem) => item.id === newProduct.id
+            );
+
+            if (existingIndex !== -1) {
+              existingCart[existingIndex].quantity += 1;
+            } else {
+              existingCart.push(newProduct);
+            }
+
+            localStorage.setItem("checkoutCart", JSON.stringify(existingCart));
+            // trigger cartUpdated
+            window.dispatchEvent(new Event("cartUpdated"));
+          }} className="px-5 py-2 w-full text-xs bg-amber-400 rounded mb-2 cursor-pointer">
+          Add to cart 
         </button>
         {/* Direct Checkout Button */}
         <Link
@@ -102,8 +128,6 @@ export default function ProductCard({
         >
           অর্ডার করুন
         </Link>
-
-        
       </div>
     </div>
   );
