@@ -135,72 +135,73 @@ const ProductDetails = () => {
               ৳ {product?.regularPrice}
             </span>
           </div>
-<div className="flex justify-between gap-4">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
+            <button className="px-6 py-2 w-full bg-amber-400 rounded">
+              Add to cart
+            </button>
+            <Link
+              href="/checkout"
+              onClick={() => {
+                setIsOrdering(true);
+                const newProduct = {
+                  id,
+                  name: product?.name,
+                  regularPrice: product?.regularPrice,
+                  discountPrice: product?.discountPrice,
+                  image: product?.images[0] || "/placeholder.png",
+                  quantity: 1,
+                };
 
-<button className="px-6 py-2 w-full bg-amber-400 rounded">Add to cart</button>
-          <Link
-            href="/checkout"
-            onClick={() => {
-              setIsOrdering(true);
-              const newProduct = {
-                id,
-                name: product?.name,
-                regularPrice: product?.regularPrice,
-                discountPrice: product?.discountPrice,
-                image: product?.images[0] || "/placeholder.png",
-                quantity: 1,
-              };
+                const existingCart: CartItem[] = JSON.parse(
+                  localStorage.getItem("checkoutCart") || "[]"
+                );
 
-              const existingCart: CartItem[] = JSON.parse(
-                localStorage.getItem("checkoutCart") || "[]"
-              );
+                const existingIndex = existingCart.findIndex(
+                  (item) => item.id === newProduct.id
+                );
 
-              const existingIndex = existingCart.findIndex(
-                (item) => item.id === newProduct.id
-              );
+                if (existingIndex !== -1) {
+                  existingCart[existingIndex].quantity += 1;
+                } else {
+                  existingCart.push(newProduct);
+                }
 
-              if (existingIndex !== -1) {
-                existingCart[existingIndex].quantity += 1;
-              } else {
-                existingCart.push(newProduct);
-              }
-
-              localStorage.setItem(
-                "checkoutCart",
-                JSON.stringify(existingCart)
-              );
-              // trigger cartUpdated
-              window.dispatchEvent(new Event("cartUpdated"));
-              setIsOrdering(false);
-            }}
-            className="bg-orange-400 w-full hover:bg-orange-500 text-white font-semibold py-2 md:py-3 px-6 rounded cursor-pointer text-center"
-          >
-            {isOrdering ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v8H4z"
-                ></path>
-              </svg>
-            ) : (
-              "অর্ডার করুন"
-            )}
-          </Link>
-</div>
+                localStorage.setItem(
+                  "checkoutCart",
+                  JSON.stringify(existingCart)
+                );
+                // trigger cartUpdated
+                window.dispatchEvent(new Event("cartUpdated"));
+                setIsOrdering(false);
+              }}
+              className="bg-orange-400 w-full hover:bg-orange-500 text-white font-semibold py-2 md:py-3 px-6 rounded cursor-pointer text-center"
+            >
+              {isOrdering ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8H4z"
+                  ></path>
+                </svg>
+              ) : (
+                "অর্ডার করুন"
+              )}
+            </Link>
+          </div>
 
           <a
             href="https://wa.me/8801795072200"

@@ -63,6 +63,10 @@ export default function ProductCard({
           </span>
         </div>
 
+
+        <button className="px-5 py-2 w-full text-xs bg-amber-400 rounded mb-2">
+          Add to cart
+        </button>
         {/* Direct Checkout Button */}
         <Link
           href={`/checkout`}
@@ -92,12 +96,14 @@ export default function ProductCard({
 
             localStorage.setItem("checkoutCart", JSON.stringify(existingCart));
             // trigger cartUpdated
-window.dispatchEvent(new Event("cartUpdated"));
+            window.dispatchEvent(new Event("cartUpdated"));
           }}
           className="mt-auto bg-orange-400 hover:bg-orange-500 w-full text-white text-xs rounded-sm font-semibold py-2 px-5 transition text-center inline-block cursor-pointer"
         >
           অর্ডার করুন
         </Link>
+
+        
       </div>
     </div>
   );
