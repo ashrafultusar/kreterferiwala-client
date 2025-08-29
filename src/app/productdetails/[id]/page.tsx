@@ -135,7 +135,9 @@ const ProductDetails = () => {
               ৳ {product?.regularPrice}
             </span>
           </div>
+<div className="flex justify-between gap-4">
 
+<button className="px-6 py-2 w-full bg-amber-400 rounded">Add to cart</button>
           <Link
             href="/checkout"
             onClick={() => {
@@ -171,7 +173,7 @@ const ProductDetails = () => {
               window.dispatchEvent(new Event("cartUpdated"));
               setIsOrdering(false);
             }}
-            className="bg-orange-400 hover:bg-orange-500 text-white font-semibold py-2 md:py-3 px-6 rounded cursor-pointer text-center"
+            className="bg-orange-400 w-full hover:bg-orange-500 text-white font-semibold py-2 md:py-3 px-6 rounded cursor-pointer text-center"
           >
             {isOrdering ? (
               <svg
@@ -198,6 +200,8 @@ const ProductDetails = () => {
               "অর্ডার করুন"
             )}
           </Link>
+</div>
+
           <a
             href="https://wa.me/8801795072200"
             target="_blank"
