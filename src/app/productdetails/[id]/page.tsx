@@ -136,7 +136,39 @@ const ProductDetails = () => {
             </span>
           </div>
           <div className="flex flex-col md:flex-row justify-between gap-4">
-            <button className="px-6 py-2 w-full bg-amber-400 rounded">
+            <button onClick={() => {
+                setIsOrdering(true);
+                const newProduct = {
+                  id,
+                  name: product?.name,
+                  regularPrice: product?.regularPrice,
+                  discountPrice: product?.discountPrice,
+                  image: product?.images[0] || "/placeholder.png",
+                  quantity: 1,
+                };
+
+                const existingCart: CartItem[] = JSON.parse(
+                  localStorage.getItem("checkoutCart") || "[]"
+                );
+
+                const existingIndex = existingCart.findIndex(
+                  (item) => item.id === newProduct.id
+                );
+
+                if (existingIndex !== -1) {
+                  existingCart[existingIndex].quantity += 1;
+                } else {
+                  existingCart.push(newProduct);
+                }
+
+                localStorage.setItem(
+                  "checkoutCart",
+                  JSON.stringify(existingCart)
+                );
+                // trigger cartUpdated
+                window.dispatchEvent(new Event("cartUpdated"));
+                setIsOrdering(false);
+              }} className="px-6 py-2 w-full bg-amber-400 rounded cursor-pointer">
               Add to cart
             </button>
             <Link

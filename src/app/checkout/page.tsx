@@ -138,9 +138,25 @@ const CheckoutPage = () => {
       if (res.ok) {
         setOrderedProductNames(products.map((product) => product.name));
         localStorage.removeItem("checkoutCart");
+
+        window.dispatchEvent(new Event("cartUpdated"));
         toast.success(
           `Order placed successfully! Order Number: ${data.orderNumber}`
         );
+
+        if (typeof window !== "undefined" && window.fbq) {
+          window.fbq("track", "Purchase", {
+            value: totalAmount,
+            currency: "BDT",
+            contents: products.map((p) => ({
+              id: p.id,
+              quantity: p.quantity,
+              item_price: p.discountPrice,
+            })),
+            num_items: products.reduce((sum, p) => sum + p.quantity, 0),
+          });
+        }
+
         setOrderSuccess(true);
       } else {
         setError(data.error || data.message || "অর্ডার পাঠাতে সমস্যা হয়েছে");

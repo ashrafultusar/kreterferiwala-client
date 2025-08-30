@@ -63,7 +63,8 @@ export default function ProductCard({
           </span>
         </div>
 
-        <button onClick={() => {
+        <button
+          onClick={() => {
             const newProduct: CartItem = {
               id,
               name,
@@ -90,8 +91,10 @@ export default function ProductCard({
             localStorage.setItem("checkoutCart", JSON.stringify(existingCart));
             // trigger cartUpdated
             window.dispatchEvent(new Event("cartUpdated"));
-          }} className="px-5 py-2 w-full text-xs bg-amber-400 rounded mb-2 cursor-pointer">
-          Add to cart 
+          }}
+          className="px-5 py-2 w-full text-xs bg-amber-400 rounded mb-2 cursor-pointer"
+        >
+          Add to cart
         </button>
         {/* Direct Checkout Button */}
         <Link

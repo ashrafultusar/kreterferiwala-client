@@ -209,7 +209,7 @@ const AllCategoriesProducts = () => {
                   className="text-red-500 hover:text-red-700 transition-colors"
                   aria-label={`Delete ${product.name}`}
                 >
-                  <MdDeleteOutline className="text-2xl" />
+                  <MdDeleteOutline className="text-2xl cursor-pointer" />
                 </button>
               </div>
             </div>

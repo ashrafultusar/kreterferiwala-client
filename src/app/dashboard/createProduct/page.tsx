@@ -71,7 +71,7 @@ export default function ProductForm() {
           discountPrice: "",
           images: [],
         });
-        router.push("/dashboard/orders");
+        router.push("/dashboard/allProducts");
       } else {
         const error = await res.json();
         toast.error("Error: " + error.message);

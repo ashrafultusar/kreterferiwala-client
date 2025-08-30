@@ -86,11 +86,7 @@ const AllCategories: React.FC<AllCategoriesProps> = ({data}) => {
                     <h3 className="text-sm font-semibold text-gray-800">
                       {category.name}
                     </h3>
-                    <p className="text-xs text-gray-500">
-                      {category.count && category.count > 0
-                        ? `${category.count} products`
-                        : "No products"}
-                    </p>
+                    
                   </div>
                 </div>
               </Link>

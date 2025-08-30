@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { GrFormView } from "react-icons/gr";
 
 const statusTabs = ["active", "shipped", "delivered", "cancelled"];
 
@@ -161,10 +162,11 @@ const Page = () => {
                 <td className="px-6 py-4">{order?.totalAmount}৳</td>
                 <td className="px-6 py-4 flex gap-1">
                   <Link
-                    href={`/admin/orders/${order?._id}`}
+                    href={`/dashboard/orders/${order?._id}`}
                     className="text-blue-600 hover:underline cursor-pointer"
                   >
-                    <FaEdit className="text-green-600 cursor-pointer hover:text-green-800" />
+                    <GrFormView
+                    className="text-green-600 cursor-pointer hover:text-green-800 text-2xl" />
                   </Link>
                   <button
                     className="text-blue-600 hover:underline cursor-pointer"
