@@ -17,8 +17,15 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [token, setToken] = useState<string | null>(null);
   const router = useRouter();
+
+ 
+
+useEffect(() => {
+  setToken(localStorage.getItem("token"));
+}, []);
+
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
@@ -36,24 +43,21 @@ export default function Navbar() {
     }
   }, [lastScrollY]);
 
- 
   useEffect(() => {
     const getCartCount = () => {
-      const cartData = localStorage.getItem("checkoutCart"); 
-      const cartItems = cartData ? JSON.parse(cartData) : []; 
+      const cartData = localStorage.getItem("checkoutCart");
+      const cartItems = cartData ? JSON.parse(cartData) : [];
       setCartCount(cartItems.length);
     };
     // প্রথমে কার্ট কাউন্ট লোড করবো
     getCartCount();
-  
+
     // custom event listener add করবো
     window.addEventListener("cartUpdated", getCartCount);
-  
+
     // কম্পোনেন্ট আনমাউন্ট হলে remove করবো
     return () => window.removeEventListener("cartUpdated", getCartCount);
   }, []);
-  
-
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -71,10 +75,18 @@ export default function Navbar() {
           {/* Mobile View */}
           <div className="flex items-center md:hidden w-full justify-between">
             <button onClick={() => setIsOpen(true)}>
-              <IoMenuSharp className="text-2xl text-black" />
+              <IoMenuSharp className="text-2xl cursor-pointer text-black" />
             </button>
-            <Link href="/" className="flex cursor-pointer items-center space-x-2">
-              <Image src="/logo_icon/logo.png" alt="Logo" width={40} height={40} />
+            <Link
+              href="/"
+              className="flex cursor-pointer items-center space-x-2"
+            >
+              <Image
+                src="/logo_icon/logo.png"
+                alt="Logo"
+                width={40}
+                height={40}
+              />
             </Link>
 
             {/* Cart Icon for Mobile */}
@@ -90,8 +102,16 @@ export default function Navbar() {
 
           {/* Desktop View */}
           <div className="hidden md:flex w-full items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2 cursor-pointer">
-              <Image src="/logo_icon/logo.png" alt="Logo" width={50} height={50} />
+            <Link
+              href="/"
+              className="flex items-center space-x-2 cursor-pointer"
+            >
+              <Image
+                src="/logo_icon/logo.png"
+                alt="Logo"
+                width={50}
+                height={50}
+              />
             </Link>
 
             {/* Search Bar */}
@@ -109,15 +129,25 @@ export default function Navbar() {
                 onClick={handleSearch}
               />
             </div>
-
+            
             {/* Call Info & Cart */}
             <div className="flex items-center space-x-6">
+            {token && (
+              <Link
+                href={"/dashboard"}
+                className="uppercase px-4 py-1 border rounded bg-slate-200 text-black"
+              >
+                dashboard
+              </Link>
+            )}
               <a
                 href="https://wa.me/8801795072200"
                 target="_blank"
                 className="flex flex-col items-end"
               >
-                <span className="text-sm text-gray-600">অর্ডার করতে কল করুন</span>
+                <span className="text-sm text-gray-600">
+                  অর্ডার করতে কল করুন
+                </span>
                 <span className="text-red-500 font-semibold">০১৭৯৫০৭২২০০</span>
               </a>
 
@@ -151,7 +181,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="fixed top-0 left-0 w-64 h-full bg-white shadow-lg p-6 z-50 flex flex-col space-y-6">
           <button onClick={() => setIsOpen(false)} className="self-end">
-            <ImCross className="text-2xl text-black" />
+            <ImCross className="text-2xl cursor-pointer text-black" />
           </button>
 
           {/* Mobile Search */}
@@ -170,13 +200,22 @@ export default function Navbar() {
             />
           </div>
 
+          {token && (
+              <Link
+                href={"/dashboard"}
+                className="uppercase px-4 py-1 border rounded bg-slate-200 text-black"
+              >
+                dashboard
+              </Link>
+            )}
+
           {/* Mobile Categories */}
           <div className="flex flex-col space-y-4 mt-4">
             {categories.map((category) => (
               <Link
                 key={category._id}
                 href={`/products-category/${encodeURIComponent(category.name)}`}
-                className="text-black text-base hover:text-red-500"
+                className="text-black text-base hover:text-red-500 bg-gray-200 pl-2 py-1"
                 onClick={() => setIsOpen(false)}
               >
                 {category.name}

@@ -116,7 +116,7 @@ export default function AdminNav({
 
       {/* Mobile topbar */}
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white shadow-md p-4 flex justify-between items-center z-40">
-        <h1 className="text-xl font-bold text-orange-500">Admin</h1>
+        <Link href={'/'} className="text-xl font-bold text-orange-500">Admin</Link>
         <button onClick={() => setShowSidebar(!showSidebar)}>
           {showSidebar ? (
             <X className="w-6 h-6 text-gray-700" />
