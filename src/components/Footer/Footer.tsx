@@ -16,12 +16,11 @@ const Footer = () => {
         <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
           {/* Outlet Location */}
           <div>
-            <h4 className="text-lg font-semibold mb-2">Outlet Location</h4>
+            <h4 className="text-lg font-semibold mb-2">Contact Us</h4>
             <div className="h-[2px] w-10 bg-white mb-4" />
             <p className="text-black leading-relaxed text-sm">
-              প্লট-৭, রোড-এ, ব্লক-ক, সেকশন-৬, মিরপুর
-              <br />
-              ঢাকা-১২১৬ <br />
+             
+            
               কল করুনঃ ০১৭৯৫০৭২২০০ <br />
               ইমেইল করুনঃ <br />
               kretarferiwala@gmail.com
