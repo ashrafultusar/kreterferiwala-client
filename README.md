@@ -1,4 +1,4 @@
-LIVE LINK : https://kreterferiwala-client.vercel.app
+LIVE LINK : https://kreterferiwala.vercel.app
 
 
 
