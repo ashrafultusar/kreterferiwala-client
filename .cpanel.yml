@@ -1,0 +1,11 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/kretarferiwala/myapp
+    - /bin cp * $DEPLOYPATH
+    - /bin/cp -R * $DEPLOYPATH
+
+
+
+
+     
